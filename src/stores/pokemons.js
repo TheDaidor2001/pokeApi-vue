@@ -8,19 +8,11 @@ export const usePokemonStore = defineStore("pokemons", () => {
   const pokemon = ref({});
   const cantidadPokemons = ref(20);
   const loading = ref(false);
-  const typesColor = ref([
-    {
-      type: "grass",
-      color: "bg-lime-700",
-    },
-    {
-      type: "fire",
-      color: "bg-red-600",
-    },
-  ]);
+  const favoritos = ref([]);
 
   async function getPokemons() {
     loading.value = true;
+    pokemons.value = [];
     try {
       for (let index = 1; index < 20; index++) {
         const { data } = await PokemonService.obtenerPokemon(index);
@@ -38,7 +30,6 @@ export const usePokemonStore = defineStore("pokemons", () => {
     try {
       const { data } = await PokemonService.obtenerPokemon(id);
       pokemon.value = data;
-      console.log(pokemon);
     } catch (error) {
       console.log(error);
     } finally {
@@ -46,28 +37,38 @@ export const usePokemonStore = defineStore("pokemons", () => {
     }
   }
 
-
   async function getMorePokemons() {
-
-    cantidadPokemons.value += 20
+    cantidadPokemons.value += 20;
     try {
-      for (let index = cantidadPokemons.value - 20; index < cantidadPokemons.value; index++) {
+      for (
+        let index = cantidadPokemons.value - 20;
+        index < cantidadPokemons.value;
+        index++
+      ) {
         const { data } = await PokemonService.obtenerPokemon(index);
         pokemons.value.push(data);
-      };
-  } catch (error) {
+      }
+    } catch (error) {
       console.log(error);
-  }
+    }
   }
 
-  
+  function favoritosPoke(poke, id) {
+    
+    favoritos.value.push({
+      ...poke
+    });
+
+    console.log(favoritos.value);
+  }
+
   return {
     pokemons,
     pokemon,
     loading,
-    typesColor,
     getPokemons,
     getPokemon,
-    getMorePokemons
+    getMorePokemons,
+    favoritosPoke
   };
 });

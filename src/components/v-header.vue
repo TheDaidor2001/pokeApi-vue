@@ -8,7 +8,6 @@ import RouterLink from './RouterLink.vue';
             <img src="/pokemon.png" alt="Logo de pokemon" class="w-40">
             <nav class="flex gap-5 uppercase">
                <RouterLink text="home">Inicio</RouterLink>
-               <RouterLink text="favoritos">Favoritos</RouterLink>
             </nav>
         </div>
     </header>

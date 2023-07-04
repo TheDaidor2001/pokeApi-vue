@@ -6,13 +6,14 @@ import { usePokemonStore } from '../stores/pokemons';
 import ArrowIcon from '../components/icons/ArrowIcon.vue'
 import Hearticon from '../components/icons/HeartIcon.vue'
 import PokemonService from '../services/PokemonService';
-import ProgressBar from '../components/Progressbar.vue'
-
+import ProgressBar from '../components/Progressbar.vue';
+import LoadingComponent from '../components/LoadingComponent.vue'
 const route = useRoute()
 const pokemons = usePokemonStore()
 const pokemon = ref({})
 const especies = ref({})
-const tabs = ref('tab-2')
+const tabs = ref('tab-1')
+const liked = ref(false)
 
 const colorPokemon = ref('')
 const imagenPokemon = ref('')
@@ -35,17 +36,38 @@ function isActive(tab) {
     tabs.value = tab
 }
 
+const like = computed(() => {
+    return pokemon.value.fav ? 'red' : 'white'
+})
+
+const toggleLike = () => {
+    liked.value = !liked.value
+    pokemon.value = {
+        ...pokemon.value,
+        fav: liked.value
+    }
+
+    pokemons.favoritosPoke(pokemon.value, route.params.id)
+}
+
 </script>
 
 <template>
     <main :class="colorPokemon" class="h-screen overflow-hidden">
-        <p v-if="pokemons.loading">Loading...</p>
+        <LoadingComponent v-if="pokemons.loading"/>
         <header v-else class="py-10 px-5 relative">
             <nav class="flex justify-between items-center">
                 <RouterLink :to="{ name: 'home' }">
                     <ArrowIcon />
                 </RouterLink>
-                <Hearticon />
+                <button
+                    type="button"
+                    @click="toggleLike"
+                >
+                    <Hearticon 
+                        :fill="like"
+                    />
+                </button>
             </nav>
             <h1 class="text-3xl mt-5 capitalize text-white font-bold">{{ pokemons.pokemon.name }}</h1>
             <div class="flex w-1/3 gap-3 mt-3 mb-32">
@@ -54,12 +76,12 @@ function isActive(tab) {
                 
             </div>
             <div class="flex items-center justify-center">
-                <img class="w-60 absolute" :src="imagenPokemon" :alt="`Image del pokemon ${pokemons.pokemon.name}`">
+                <img class="w-52 absolute" :src="imagenPokemon" :alt="`Image del pokemon ${pokemons.pokemon.name}`">
             </div>
         </header>
 
         <section class="bg-white rounded-t-3xl mt-12 px-5 py-24 transition-all h-screen">
-            <nav class="flex justify-between">
+            <nav class="flex justify-center gap-10 text-xl">
                 <button type="button" class="text-gray-500"
                     :class="[tabs === 'tab-1' && 'text-gray-800 border-b-2 border-blue-500']" @click="isActive('tab-1')">
                     Info
@@ -67,12 +89,6 @@ function isActive(tab) {
                 <button type="button" class="text-gray-500"
                     :class="[tabs === 'tab-2' && 'text-gray-800 border-b-2 border-blue-500']" @click="isActive('tab-2')">
                     Stats iniciales
-                </button>
-                <button type="button" class="text-gray-500">
-                    Evoluciones
-                </button>
-                <button type="button" class="text-gray-500">
-                    Movimientos
                 </button>
             </nav>
             <div class="mt-10">

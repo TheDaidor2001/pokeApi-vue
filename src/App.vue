@@ -50,5 +50,23 @@ import { RouterView } from 'vue-router';
     background-color: rgb(237, 161, 8);
 }
 
+.dark {
+    background-color: rgb(38 38 38);
+}
 
+.rock {
+    background-color: rgb(212 212 212);
+}
+
+.ghost {
+    background-color: rgb(192 132 252);
+}
+
+.ice {
+    background-color: rgb(186 230 253);
+}
+
+.steel {
+    background-color: rgb(30 41 59);
+}
 </style>
